@@ -1,0 +1,31 @@
+name: CI - Test Página Hola Mundo 
+
+on:
+  push:
+    branches:
+      - main  # Cambia si tu rama principal es otra
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Obtener código fuente 
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js 🔧
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Instalar dependencias 
+      run: npm install
+
+    - name: Construir y ejecutar Docker 
+      run: |
+        docker build -t hola-mundo-web .
+        docker run -d -p 8080:80 hola-mundo-web
+        sleep 5  # Espera unos segundos que el servidor inicie
+
+    - name: Ejecutar pruebas unitarias 
+      run: npm test
